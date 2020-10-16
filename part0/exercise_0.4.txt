@@ -1,0 +1,25 @@
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note
+
+note over browser:
+server handle post 
+
+server-->browser: HTTP status code 302
+
+note over browser:
+status code 302 asks the browser to do a new HTTP GET request to reload the Notes Page
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/notes
+server-->browser: HTML-code
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server-->browser: main.css
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server-->browser: main.js
+
+note over browser:
+browser starts executing js-code that requests JSON data from server end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server-->browser: [{ content: "hi", "date": "2020-10-16T04:14:40.310Z" }, ...]
+
+note over browser:
+browser executes the event handler that renders notes to display end note

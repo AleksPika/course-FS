@@ -1,0 +1,5 @@
+note over browser:
+browser adds new note to notes array
+
+browser->server: HTTP POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+server-->browser: {"message":"note created"}
