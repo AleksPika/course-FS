@@ -8,12 +8,34 @@ const Statistics = (props) => {
   return (
     <div>
       <h2>Statistics</h2>
-      <p>good: {props.good}</p>
-      <p>neutral: {props.neutral}</p>
-      <p>bad: {props.bad}</p>
-      <p>all: {props.all}</p>
-      <p>average: {((props.good - props.bad) / props.all).toFixed(1)}</p>
-      <p>positive {((props.good / props.all) * 100).toFixed(1)} %</p>
+      <table className="table">
+        <tbody>
+          <tr>
+            <td>good</td>
+            <td>{props.good}</td>
+          </tr>
+          <tr>
+            <td>neutral</td>
+            <td>{props.neutral}</td>
+          </tr>
+          <tr>
+            <td>bad</td>
+            <td>{props.bad}</td>
+          </tr>
+          <tr>
+            <td>all</td>
+            <td>{props.all}</td>
+          </tr>
+          <tr>
+            <td>average</td>
+            <td>{((props.good - props.bad) / props.all).toFixed(1)}</td>
+          </tr>
+          <tr>
+            <td>positive</td>
+            <td>{((props.good / props.all) * 100).toFixed(1)} %</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   );
 };
