@@ -12,9 +12,15 @@ const anecdotes = [
 
 const App = (props) => {
   const [selected, setSelected] = useState(0);
+  const [voice, setVoice] = useState([0,0,0,0,0,0])
 
   const handleChoice = () => {
     setSelected(Math.floor(Math.random()*anecdotes.length))
+  }
+  const voiceChoice = () => {
+    let copy = [...voice]
+    copy[selected]++
+    setVoice(copy)
   }
 
   return (
@@ -25,8 +31,18 @@ const App = (props) => {
       <div>
         <button onClick={handleChoice}>next anecdote</button>
       </div>
+      <div>
+        <button onClick={voiceChoice}>voice</button>
+      </div>
+      <div>
+        It has {voice[selected]} voices
+      </div>
     </>
   )
 };
 
-ReactDOM.render(<App anecdotes={anecdotes}/>, document.getElementById("root"));
+ReactDOM.render(
+  <App
+    anecdotes={anecdotes}
+  />,
+  document.getElementById("root"));
