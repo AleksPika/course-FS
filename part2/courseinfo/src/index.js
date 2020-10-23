@@ -32,11 +32,41 @@ const App = () => {
         name: 'State of a component',
         exercises: 14,
         id: 3
+      },
+      {
+        name: 'Redux',
+        exercises: 11,
+        id: 4
       }
     ]
   }
+  
+const Sum = () => {
+	
+	const mas = [];
+	const total = (s, p) => {
+		return (
+			s + p
+		)
+	}
+	
+	for (let i = 0; i < course.parts.length; i++) {
+		mas.push(course.parts[i].exercises)
+	}
+	
+	return (
+		<div>
+			<p>total of {mas.reduce(total)} exercises</p>
+		</div>
+	)
+}
 
-  return <Course course={course} />
+  return (
+    <>
+      <Course course={course} />
+      <Sum />
+    </>
+  )
 }
 
 ReactDOM.render(
