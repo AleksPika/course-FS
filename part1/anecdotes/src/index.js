@@ -12,19 +12,40 @@ const anecdotes = [
 
 const App = (props) => {
   const [selected, setSelected] = useState(0);
-  const [voice, setVoice] = useState([0,0,0,0,0,0])
+  const [vote, setVote] = useState({
+    0: 0,
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0
+  })
 
   const handleChoice = () => {
     setSelected(Math.floor(Math.random()*anecdotes.length))
   }
-  const voiceChoice = () => {
-    let copy = [...voice]
-    copy[selected]++
-    setVoice(copy)
+
+  const voteChoice = () => {
+    setVote({
+      ...vote,
+      [selected]: vote[selected] + 1
+    })
+  }
+
+  const maxVote = () => {
+    let max = -1, maxEl = -1
+    for (let el in vote) {
+      if (vote[el] > max) {
+        maxEl = el
+        max = vote[el]
+      }
+    }
+    return maxEl
   }
 
   return (
     <>
+      <h1>Anecdote of the day</h1>
       <div>
         {props.anecdotes[selected]}
       </div>
@@ -32,10 +53,14 @@ const App = (props) => {
         <button onClick={handleChoice}>next anecdote</button>
       </div>
       <div>
-        <button onClick={voiceChoice}>voice</button>
+        <button onClick={voteChoice}>vote</button>
       </div>
       <div>
-        It has {voice[selected]} voices
+        It has {vote[selected]} votes
+      </div>
+      <h1>Anecdote with most votes</h1>
+      <div>
+        {props.anecdotes[maxVote()]}
       </div>
     </>
   )
