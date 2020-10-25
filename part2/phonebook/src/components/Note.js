@@ -2,7 +2,7 @@ import React from 'react'
 
 const Note = ({ person }) => {
     return (
-        <div>{person.name}</div>
+        <div>{person.id}. {person.name}, {person.number}</div>
     )
 }
 
