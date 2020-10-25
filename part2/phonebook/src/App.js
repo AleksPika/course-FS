@@ -13,10 +13,21 @@ const App = (props) => {
         event.preventDefault()
         const personObject = {
             name: newName,
-            date: new Date().toISOString(),
             id: persons.length + 1,
         }
-        setPersons(persons.concat(personObject))
+        const repeat = () => {
+            for (let i = 0; i < persons.length; i++){
+                if (newName === persons[i].name) {
+                    window.alert(`${newName} is already added to phonebook`)
+					
+					setPersons(persons)
+                }
+                else {
+					setPersons(persons.concat(personObject))
+				}
+            }
+        }
+        repeat()
         setNewName('')
     } 
 
@@ -27,22 +38,24 @@ const App = (props) => {
 
     return (
         <div>
-            <h1>Persons</h1>
-           
-            <ul>
-                {persons.map(person => 
-                    <Note key={person.id} person={person} />
-                )}
-            </ul>
-            <form className="form-inline" onSubmit={addPerson}>
-                <div className="form-group">
-                    <input className="form-control"
+            <h1>Phonebook</h1>
+           <form className="form-inline" onSubmit={addPerson}>
+                <div className="form-group row">
+                    <label className="col-sm-2 col-form-label">Name:</label>
+                    <input className="form-control" 
                         value={newName}
                         onChange={handleNameChange}
                     />
                     <button className="btn btn-primary ml-2" type="submit">save</button>
                 </div>
             </form>
+            <h1>Numbers</h1>
+            <div>
+                {persons.map(person => 
+                    <Note key={person.id} person={person} />
+                )}
+            </div>
+            
         </div>
     )
 }
