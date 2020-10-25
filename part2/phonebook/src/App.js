@@ -1,11 +1,17 @@
 import React, { useState } from 'react'
-import Note from './components/Note'
+import Persons from './components/Persons'
+import InpName from './components/InpName'
+import InpNumber from './components/InpNumber'
+import InpSearch from './components/InpSearch'
+import InpButton from './components/InpButton'
 
 const App = (props) => {
  
-    const [persons, setPersons] = useState(props.persons)
-    const [newName, setNewName] = useState(' ')
-    const [newNumber, setNewNumber] = useState(' ')
+    const [ persons, setPersons ] = useState(props.persons)
+    const [ newName, setNewName ] = useState(' ')
+    const [ newNumber, setNewNumber ] = useState(' ')
+    const [ searchName, setSearchName ] = useState(' ')
+	const [ filterChange, setFilterChange ] = useState(false) 
 
 
     const addPerson = (event)  => {
@@ -38,34 +44,46 @@ const App = (props) => {
     const handleNumberChange = (event) => {
         setNewNumber(event.target.value)
     }
-
+    const handleSearchName = (event) => {
+		setSearchName(event.target.value)
+		setFilterChange(true)
+	}
+	const filterItems = (query) => {
+		const filter_result = persons.filter(person => person.name.toLowerCase().split(' ').join(' ').indexOf(query.toLowerCase()) !== -1)
+		return filter_result
+	}
+    const personsToShow = filterChange
+		? filterItems(searchName)
+		: persons
 
     return (
         <div>
             <h1>Phonebook</h1>
-           <form className="form-inline" onSubmit={addPerson}>
-                <div className="form-group row">
-                    <label className="col-sm-2 col-form-label">Name:</label>
-                    <input className="form-control" 
-                        value={newName}
-                        onChange={handleNameChange}
-                    />
-                    <label className="col-sm-2 col-form-label">Phone:</label>
-                    <input className="form-control" 
-                        value={newNumber}
-                        onChange={handleNumberChange}
-                    />
-                    <button className="btn btn-primary ml-2" type="submit">add</button>
-                </div>
-               
+            <div>
+				<InpSearch type = "text" value = {searchName.trim()} onChange = {handleSearchName} />
+			</div>
+            <form onSubmit={addPerson}>
+                <InpName
+                    type="text"
+                    value={newName}
+                    onChange={handleNameChange}
+                />
+                <InpNumber
+                    type="text"
+                    value={newNumber}
+                    onChange={handleNumberChange}
+                />
+                <InpButton
+                    type="submit"
+                    text="add"
+                />
             </form>
             <h1>Numbers</h1>
             <div>
-                {persons.map(person => 
-                    <Note key={person.id} person={person} />
+                {personsToShow.map(person => 
+                    <Persons key={person.id} person={person} />
                 )}
             </div>
-            
         </div>
     )
 }
