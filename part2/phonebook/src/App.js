@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import Persons from './components/Persons'
 import InpName from './components/InpName'
 import InpNumber from './components/InpNumber'
 import InpSearch from './components/InpSearch'
 import InpButton from './components/InpButton'
+import personService from './services/persons'
 
 const App = () => {
     
@@ -14,15 +14,14 @@ const App = () => {
     const [ searchName, setSearchName ] = useState(' ')
 	const [ filterChange, setFilterChange ] = useState(false) 
 
-    const hook = () => {
-        axios
-        .get('http://localhost:3001/persons')
+   
+    useEffect(() => {
+    personService
+        .getAll()
         .then(response => {
             setPersons(response.data)
         })
-    }
-
-    useEffect(hook, [])
+    }, [])
 
     const addPerson = (event)  => {
         event.preventDefault()
@@ -31,13 +30,14 @@ const App = () => {
             number: newNumber,
         }
         
-        axios
-        .post('http://localhost:3001/persons', personObject)
-        .then(response => {
-            setPersons(persons.concat(response.data))
-            setNewName('')
-            setNewNumber('')
-        })
+        
+        personService
+            .create(personObject)
+            .then(response => {
+                setPersons(persons.concat(response.data))
+                setNewName('')
+                setNewNumber('')
+            })
         
     } 
 
@@ -64,7 +64,8 @@ const App = () => {
             <h1>Phonebook</h1>
             <div>
 				<InpSearch type = "text" value = {searchName.trim()} onChange = {handleSearchName} />
-			</div>
+            </div>
+            <h1>Add a new number</h1>
             <form onSubmit={addPerson}>
                 <InpName
                     type="text"
