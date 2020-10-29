@@ -20,11 +20,11 @@ const App = () => {
    
     useEffect(() => {
     personService
-        .getAll()
-        .then(response => {
-            setPersons(response.data)
+      .getAll()
+        .then(initialPersons => {
+        setPersons(initialPersons)
         })
-    }, [])
+  }, [])
 
     const addPerson = (event)  => {
         event.preventDefault()
@@ -34,18 +34,29 @@ const App = () => {
             personService
                 .update(duplicateCheck.id, { name: duplicateCheck.name, number: newNumber})
                 .then(returnedPerson => {
-                if (window.confirm(`${returnedPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
-                    setPersons(persons.map(person => 
+                    if (window.confirm(`${returnedPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
+                        setPersons(persons.map(person => 
                             person.id !== duplicateCheck.id ? person : returnedPerson))
-                }
-                setNewName('')
-                setNewNumber('')
+                            setMessageType('verification')
+                            setmessage(`The old number ${duplicateCheck.name} replaced with a new one `)
+                            setTimeout(() => {
+                                setmessage(null)
+                                setMessageType(null)
+                            }, 5000)
+                        }
+                    setNewName('')
+                    setNewNumber('')
                 })
                 return
             } else if (typeof duplicateCheck !== 'undefined') {
-                alert(`${newName} is already added to phonebook`)
                 setNewName('')
                 setNewNumber('')
+                setMessageType('error')
+                setmessage(`${newName} is already added to phonebook`)
+                setTimeout(() => {
+                    setmessage(null)
+                    setMessageType(null)
+                }, 5000)
                 return
             }
 
@@ -60,7 +71,7 @@ const App = () => {
                 setPersons(persons.concat(response.data))
                 setNewName('')
                 setNewNumber('')
-                setMessageType('confirmation')
+                setMessageType('verification')
                 setmessage(`Added ${response.name}`)
                 setTimeout(() => {
                     setmessage(null)
