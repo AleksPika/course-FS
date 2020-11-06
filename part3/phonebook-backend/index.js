@@ -6,6 +6,7 @@ const cors = require('cors')
 
 app.use(bodyParser.json())
 app.use(cors())
+app.use(express.static('build'))
 
 morgan.token('post', (request, response) => JSON.stringify(request.body))
 app.use(morgan(function (tokens, request, response) {
@@ -51,11 +52,7 @@ let  persons = [
       "id": 4
     }
 ]
-app.get('/', (request, response) => {
-    response.send(`
-        <h1>Phonebook</h1 >
-    `)
-})
+
 
 app.get("/info", (request, response) => {
 	const date = new Date()
