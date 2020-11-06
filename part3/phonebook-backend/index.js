@@ -1,19 +1,33 @@
 const express = require('express')
 const app = express()
-
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const cors = require('cors')
 
 app.use(bodyParser.json())
+app.use(cors())
 
-morgan.token('body', function(request, response) {
-	console.log(response)
-	
-	return JSON.stringify(response.request.body)
-})
-
-
-app.use(morgan(':method :url :status :response[content-length] - :response-time ms :body'))
+morgan.token('post', (request, response) => JSON.stringify(request.body))
+app.use(morgan(function (tokens, request, response) {
+  if (tokens.method(request, response) === 'POST'){
+    return [
+      tokens.method(request, response),
+      tokens.url(request, response),
+      tokens.status(request, response),
+      tokens.res(request, response, 'content-length'), '-',
+      tokens['response-time'](request, response), 'ms',
+      tokens.post(request, response)
+    ].join(' ')
+  } else {
+    return [
+      tokens.method(request, response),
+      tokens.url(request, response),
+      tokens.status(request, response),
+      tokens.res(request, response, 'content-length'), '-',
+      tokens['response-time'](request, response), 'ms'
+    ].join(' ')
+  }
+}))
 
 let  persons = [
     {
@@ -37,6 +51,12 @@ let  persons = [
       "id": 4
     }
 ]
+app.get('/', (request, response) => {
+    response.send(`
+        <h1>Phonebook</h1 >
+    `)
+})
+
 app.get("/info", (request, response) => {
 	const date = new Date()
 	
@@ -101,7 +121,7 @@ app.delete('/api/persons/:id', (request, response) => {
     response.status(204).end()
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
