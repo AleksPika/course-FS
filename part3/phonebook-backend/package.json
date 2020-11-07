@@ -6,27 +6,16 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "build": "react-scripts build",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "build:ui": "rm -rf build && cd ../phonebook-frontend && npm run build --prod && cp -r build ../phonebook-backend/",
-    "deploy": "cd ../.. && git subtree push --prefix part3/phonebook-backend heroku master",
-    "deploy:force": "cd ../.. && git push heroku `git subtree split --prefix part3/phonebook-backend master`:master --force",
-    "logs:prod": "heroku logs --tail"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "proxy": "http://localhost:3001",
   "author": "",
   "license": "MIT",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "morgan": "^1.10.0",
-    "react-scripts": "^2.1.8",
-     "static": "^2.0.0"
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
-    "eslint": "^6.7.2",
     "nodemon": "^2.0.6"
   }
 }

@@ -30,6 +30,7 @@ app.use(morgan(function (tokens, request, response) {
   }
 }))
 
+
 let  persons = [
     {
       "name": "Arto Hellas",
@@ -52,7 +53,6 @@ let  persons = [
       "id": 4
     }
 ]
-
 
 app.get("/info", (request, response) => {
 	const date = new Date()
