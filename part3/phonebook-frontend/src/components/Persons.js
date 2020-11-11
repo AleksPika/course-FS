@@ -6,7 +6,6 @@ const Persons = ({ person, deleteName }) => {
         <table className="table table-hover" style={{maxWidth:`650px`}}>
             <tbody>
                 <tr>
-                    <th scope="row" style={{minWidth:`50px`}}>{person.id}.</th>
                     <td style={{minWidth:`200px`}}>{person.name}</td>
                     <td style={{minWidth:`200px`}}>{person.number}</td>
                     <td style={{minWidth:`200px`}}>

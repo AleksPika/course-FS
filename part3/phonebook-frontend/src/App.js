@@ -144,7 +144,6 @@ const App = () => {
                 <table className="table table-hover" style={{maxWidth:`650px`}}>
                     <thead>
                         <tr>
-                            <th scope="col" style={{minWidth:`50px`}}>#</th>
                             <th scope="col" style={{minWidth:`200px`}}>Name</th>
                             <th scope="col" style={{minWidth:`200px`}}>Phone</th>
                             <th scope="col" style={{minWidth:`200px`}}>Delete</th>
