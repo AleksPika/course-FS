@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react'
 import Persons from './components/Persons'
 import InpName from './components/InpName'
 import InpNumber from './components/InpNumber'
-import InpSearch from './components/InpSearch'
 import InpButton from './components/InpButton'
+import InpSearch from './components/InpSearch'
 import personService from './services/persons'
 import Notification from './components/Notification'
 
@@ -13,40 +13,40 @@ const App = () => {
     const [ newName, setNewName ] = useState('')
     const [ newNumber, setNewNumber ] = useState('')
     const [ searchName, setSearchName ] = useState('')
-    const [ filterChange, setFilterChange ] = useState(false) 
     const [ message, setmessage ] = useState(null)
     const [ messageType, setMessageType ] = useState(null)
 
-   
     useEffect(() => {
     personService
       .getAll()
         .then(initialPersons => {
-        setPersons(initialPersons)
+            setPersons(initialPersons)
         })
-  }, [])
+    }, [])
 
     const addPerson = (event)  => {
         event.preventDefault()
         
         const duplicateCheck = persons.find(person => person.name === newName)
-            if (typeof duplicateCheck !== 'undefined' && duplicateCheck.number !== newNumber) {
-            personService
-                .update(duplicateCheck.id, { name: duplicateCheck.name, number: newNumber})
-                .then(returnedPerson => {
-                    if (window.confirm(`${returnedPerson.name} is already added to phonebook, replace the old number with a new one?`)) {
-                        setPersons(persons.map(person => 
+        if (typeof duplicateCheck !== 'undefined' && duplicateCheck.number !== newNumber) {
+            if (window.confirm(`${duplicateCheck.name} is already added to phonebook, replace the old number with a new one?`)) {
+                personService
+                    .update(duplicateCheck.id, { name: duplicateCheck.name, number: newNumber })
+                    .then(returnedPerson => {
+                    
+                        setPersons(persons.map(person =>
                             person.id !== duplicateCheck.id ? person : returnedPerson))
-                            setMessageType('verification')
-                            setmessage(`The old number ${duplicateCheck.name} replaced with a new one `)
-                            setTimeout(() => {
-                                setmessage(null)
-                                setMessageType(null)
-                            }, 5000)
-                        }
+                        setMessageType('verification')
+                        setmessage(`The old number ${duplicateCheck.name} replaced with a new one `)
+                        setTimeout(() => {
+                            setmessage(null)
+                            setMessageType(null)
+                        }, 5000)
+                    
                     setNewName('')
                     setNewNumber('')
                 })
+            }
                 return
             } else if (typeof duplicateCheck !== 'undefined') {
                 setNewName('')
@@ -60,43 +60,49 @@ const App = () => {
                 return
             }
 
-        const personObject = {
-            name: newName,
-            number: newNumber,
-        }
-        
         personService
-            .create(personObject)
+            .create({ name: newName, number: newNumber })
             .then(response => {
-                setPersons(persons.concat(response.data))
+                setPersons(persons.concat(response))
                 setNewName('')
                 setNewNumber('')
                 setMessageType('verification')
                 setmessage(`Added ${response.name}`)
                 setTimeout(() => {
-                    setmessage(null)
-                    setMessageType(null)
+                setmessage(null)
+                setMessageType(null)
                 }, 5000)
             })
-        
-    } 
-    const deleteName = (event) => {
-        event.preventDefault()
-        const id = parseInt(event.target.value)
-        const name = persons[id -1].name
-        personService.deletion(persons[id -1])
-        .catch(error => {
-            setMessageType('error')
-            setmessage(`Information of ${name} has already been removed from server`)
-            setTimeout(() => {
+            .catch(error => {
+                setMessageType('error')
+                setmessage(`${JSON.stringify(error.response.data)}`)
+                setTimeout(() => {
                 setmessage(null)
                 setMessageType('error')
-            }, 5000)
-            setPersons(persons.filter(n => n.id !== id))
-        })
-        setPersons(persons.filter(n => n.id !== id))
-    }
+                }, 5000)
+            })
+    } 
 
+    const deleteName = (event) => {
+        event.preventDefault()
+
+        const id = parseInt(event.target.value)
+        const name = persons[id -1].name
+        
+        if (window.confirm(`Delete ${name} ?`)) {
+            personService.remove(id)
+            .catch(error => {
+                setMessageType('error')
+                setmessage(`Information of ${name} has already been removed from server`)
+                setTimeout(() => {
+                setmessage(null)
+                setMessageType('error')
+                }, 5000)
+                setPersons(persons.filter(n => n.id !== id))
+            })
+            setPersons(persons.filter(n => n.id !== id))
+        }
+    }
     const handleNameChange = (event) => {
         setNewName(event.target.value)
     }
@@ -105,16 +111,8 @@ const App = () => {
     }
     const handleSearchName = (event) => {
 		setSearchName(event.target.value)
-		setFilterChange(true)
 	}
-	const filterItems = (query) => {
-		const filter_result = persons.filter(person => person.name.toLowerCase().split(' ').join(' ').indexOf(query.toLowerCase()) !== -1)
-		return filter_result
-	}
-    const personsToShow = filterChange
-		? filterItems(searchName)
-		: persons
-
+	
     return (
         <div>
             <h1>Phonebook</h1>
@@ -150,9 +148,7 @@ const App = () => {
                         </tr>
                     </thead>
                 </table>
-                {personsToShow.map(person => 
-                    <Persons key={person.id} filter={filterChange} person={person} deleteName={deleteName} />
-                )}
+                <Persons filter={searchName} persons={persons} deleteName={deleteName} />
             </div>
         </div>
     )
