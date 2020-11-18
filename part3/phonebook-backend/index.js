@@ -6,8 +6,8 @@ const morgan = require('morgan')
 const cors = require('cors')
 const Person = require('./models/person')
 
-app.use(cors())
 app.use(bodyParser.json())
+app.use(cors())
 app.use(express.static('build'))
 
 morgan.token('post', (request, response) => JSON.stringify(request.body))
@@ -55,7 +55,7 @@ app.post('/api/persons', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.get("/info", (request, response) => {
+app.get("/info", (request, response, next) => {
   const date = new Date()
 
   Person.find({}).then(persons =>{
@@ -64,12 +64,14 @@ app.get("/info", (request, response) => {
         <h2>${date}</h2>
     `)
   })
+  .catch(error => next(error))
 })
 
-app.get('/api/persons', (request, response) => {
+app.get('/api/persons', (request, response, next) => {
   Person.find({}).then(persons => {
     response.json(persons)
   })
+  .catch(error => next(error))
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -84,15 +86,6 @@ app.get('/api/persons/:id', (request, response, next) => {
       .catch(error => next(error))
 })
 
-app.delete('/api/persons/:id', (request, response, next) => {
-  
-  Person.findByIdAndRemove(request.params.id)
-    .then(result => {
-      response.status(204).end()
-    })
-    .catch(error => next(error))
-})
-
 app.put('/api/persons/:id', (request, response, next) => {
   const body = request.body
   const person = {
@@ -101,6 +94,15 @@ app.put('/api/persons/:id', (request, response, next) => {
   }
   Person.findByIdAndUpdate(request.params.id, person, { new: true })
     .then(updatedPerson => response.json(updatedPerson.toJSON()))
+    .catch(error => next(error))
+})
+
+app.delete('/api/persons/:id', (request, response, next) => {
+  
+   Person.findByIdAndRemove(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
     .catch(error => next(error))
 })
 

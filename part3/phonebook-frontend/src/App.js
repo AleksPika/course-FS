@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import Persons from './components/Persons'
+import personService from './services/persons'
+import InpSearch from './components/InpSearch'
 import InpName from './components/InpName'
 import InpNumber from './components/InpNumber'
 import InpButton from './components/InpButton'
-import InpSearch from './components/InpSearch'
-import personService from './services/persons'
+import Persons from './components/Persons'
 import Notification from './components/Notification'
 
 const App = () => {
@@ -42,9 +42,8 @@ const App = () => {
                             setmessage(null)
                             setMessageType(null)
                         }, 5000)
-                    
-                    setNewName('')
-                    setNewNumber('')
+                        setNewName('')
+                        setNewNumber('')
                 })
             }
                 return
@@ -84,10 +83,11 @@ const App = () => {
     } 
 
     const deleteName = (event) => {
-        event.preventDefault()
+       event.preventDefault()
 
-        const id = parseInt(event.target.value)
-        const name = persons[id -1].name
+        const personToBeRemoved = persons.find(person => person.id === event.target.value)
+        const id = personToBeRemoved.id
+        const name = personToBeRemoved.name
         
         if (window.confirm(`Delete ${name} ?`)) {
             personService.remove(id)
@@ -103,6 +103,7 @@ const App = () => {
             setPersons(persons.filter(n => n.id !== id))
         }
     }
+
     const handleNameChange = (event) => {
         setNewName(event.target.value)
     }
